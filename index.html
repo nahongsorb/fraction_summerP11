@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ (อิสระ)</title>
+    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,6 +21,8 @@
         @media (min-width: 600px) { .nav-btn { flex: 0 1 auto; } }
         .nav-btn.active { background-color: #3182ce; color: white; box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3); }
         .nav-btn:hover:not(.active) { background-color: #cbd5e0; }
+        .teacher-btn { background-color: #e53e3e; color: white; }
+        .teacher-btn:hover { background-color: #c53030 !important; }
         
         .instruction-box { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; line-height: 1.5; }
         
@@ -87,13 +89,14 @@
 <div class="container">
     <header>
         <h1>📝 แบบฝึกหัด: เศษส่วนและจำนวนคละ</h1>
-        <div class="subtitle">ระบบตรวจคำตอบอิสระ (ตอบคำตอบสุดท้ายถูก ถือว่าผ่าน!)</div>
+        <div class="subtitle">ระบบตรวจคำตอบอัตโนมัติ (ตอบคำตอบสุดท้ายถูก ถือว่าผ่าน!)</div>
     </header>
 
     <div class="nav-buttons" id="navContainer">
-        <button class="nav-btn active" onclick="switchPage('page1')">หน้าที่ 1 (8 ข้อ)</button>
-        <button class="nav-btn" onclick="switchPage('page2')">หน้าที่ 2 (10 ข้อ)</button>
-        <button class="nav-btn" onclick="switchPage('summary')">🏆 สรุปคะแนน</button>
+        <button class="nav-btn active page-btn" onclick="switchPage('page1')">หน้าที่ 1 (8 ข้อ)</button>
+        <button class="nav-btn page-btn" onclick="switchPage('page2')">หน้าที่ 2 (10 ข้อ)</button>
+        <button class="nav-btn page-btn" onclick="switchPage('summary')">🏆 สรุปคะแนน</button>
+        <button class="nav-btn teacher-btn" id="teacherBtn" onclick="toggleTeacherMode()">🔐 เฉลยคำตอบ (ผู้ตรวจสอบ)</button>
     </div>
 
     <div id="appContent"></div>
@@ -257,6 +260,7 @@
     // --- State Management ---
     const scores = {}; 
     for(let i=1; i<=18; i++) scores[i] = false;
+    let isTeacherMode = false;
 
     const appContent = document.getElementById('appContent');
 
@@ -330,8 +334,14 @@
     }
 
     function switchPage(page) {
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+        document.querySelectorAll('.page-btn').forEach(btn => btn.classList.remove('active'));
+        if(event && event.target.classList.contains('page-btn')) {
+            event.target.classList.add('active');
+        } else {
+            // Fallback for auto-switching
+            if(page === 'page1') document.querySelectorAll('.page-btn')[0].classList.add('active');
+            else if(page === 'page2') document.querySelectorAll('.page-btn')[1].classList.add('active');
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' }); 
         
         if (page === 'page1') renderProblems(page1Data);
@@ -339,12 +349,44 @@
         else if (page === 'summary') renderSummary();
     }
 
+    // --- Teacher Mode Logic ---
+    function toggleTeacherMode() {
+        if (isTeacherMode) {
+            isTeacherMode = false;
+            alert("ปิดโหมดผู้สอนแล้ว (ระบบจะรีเฟรชหน้าเว็บเพื่อเริ่มใหม่)");
+            location.reload(); 
+            return;
+        }
+
+        const pwd = prompt("กรุณาใส่รหัสผ่านสำหรับผู้ตรวจสอบ:");
+        // รหัสผ่านคือ 9999
+        if (pwd === "9999") {
+            isTeacherMode = true;
+            document.getElementById('teacherBtn').innerText = "🔓 ปิดโหมดผู้ตรวจสอบ";
+            alert("รหัสผ่านถูกต้อง! ระบบกำลังแสดงเฉลยทั้งหมด...");
+            
+            // ให้คะแนนเต็ม
+            for(let i=1; i<=18; i++) scores[i] = true;
+            
+            // รีโหลดหน้าที่กำลังดูอยู่เพื่อแสดงเฉลย
+            const activeNav = document.querySelector('.nav-btn.active').innerText;
+            if(activeNav.includes('1')) switchPage('page1');
+            else if(activeNav.includes('2')) switchPage('page2');
+            else switchPage('summary');
+            
+        } else if (pwd !== null) {
+            alert("รหัสผ่านไม่ถูกต้อง!");
+        }
+    }
+
     // --- Interactive Logic ---
     function attachInteractions() {
         const inputs = document.querySelectorAll('.blank-box');
         
         inputs.forEach(input => {
-            if(input.value.trim() === input.getAttribute('data-answer')) {
+            // ถ้าเป็นโหมดครู หรือเคยตอบถูกไปแล้ว ให้เติมคำตอบอัตโนมัติและล็อกไว้
+            if(isTeacherMode || input.value.trim() === input.getAttribute('data-answer')) {
+                if(isTeacherMode) input.value = input.getAttribute('data-answer');
                 input.classList.add('correct');
                 input.readOnly = true;
             }
@@ -391,8 +433,15 @@
                 }
             });
         });
+
+        // จัดการ UI สำหรับโหมดครู
+        if (isTeacherMode) {
+            document.querySelectorAll('.step-item').forEach(step => step.classList.add('completed'));
+            document.querySelectorAll('.problem-card').forEach(card => card.classList.add('done'));
+        }
     }
 
+    // Initialize first page
     renderProblems(page1Data);
 
 </script>
