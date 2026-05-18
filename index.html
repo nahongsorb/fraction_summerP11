@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ (ข้อ 1-8)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
+        body { background-color: #f0f4f8; color: #2d3748; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 850px; width: 100%; background: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); }
+        header { text-align: center; border-bottom: 3px solid #3182ce; padding-bottom: 12px; margin-bottom: 30px; }
+        h1 { color: #2b6cb0; margin-bottom: 10px; font-size: 24px; }
+        .subtitle { color: #718096; font-size: 16px; margin-bottom: 15px; }
+        .instruction-box { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; border-radius: 4px; margin-bottom: 25px; font-size: 15px; }
+        .problem-card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .problem-header { font-size: 18px; font-weight: bold; color: #2c5282; margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; }
+        .step-container { margin-top: 15px; }
+        details { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; padding: 12px 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.01); transition: all 0.2s ease; }
+        details[open] { border-color: #4299e1; box-shadow: 0 4px 6px rgba(66, 153, 225, 0.1); }
+        summary { font-weight: 600; color: #4a5568; cursor: pointer; outline: none; user-select: none; }
+        summary:hover { color: #3182ce; }
+        details.locked { background-color: #f7fafc; opacity: 0.8; }
+        details.locked summary { color: #a0aec0; cursor: not-allowed; }
+        details.locked summary:hover { color: #a0aec0; }
+        details.locked summary::after { content: " 🔒 (ปลดล็อกเมื่อทำขั้นก่อนหน้าเสร็จ)"; font-size: 14px; color: #e53e3e; font-weight: normal; }
+        details.completed { border-color: #38a169; }
+        details.completed summary::after { content: " ✅ ผ่านแล้ว"; font-size: 14px; color: #38a169; }
+        .step-content { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; flex-wrap: wrap; font-size: 16px; }
+        
+        .math-expr { display: inline-flex; align-items: center; flex-wrap: wrap; background: #fff; padding: 6px 12px; border-radius: 6px; border: 1px solid #edf2f7; }
+        .fraction-container { display: inline-flex; align-items: center; margin: 0 4px; }
+        .whole-num { font-size: 20px; font-weight: bold; margin-right: 2px; }
+        .fraction-block { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
+        .num { border-bottom: 2px solid #2d3748; padding: 0 4px 4px 4px; font-weight: 600; }
+        .den { padding: 4px 4px 0 4px; font-weight: 600; }
+        .operator { font-size: 20px; margin: 0 8px; font-weight: bold; color: #e53e3e; }
+        .bracket { font-size: 28px; font-weight: 300; color: #4a5568; margin: 0 2px; }
+        .equal-sign { font-size: 20px; margin: 0 10px; font-weight: bold; color: #2b6cb0; }
+        .final-answer { background-color: #fff; border: 2px dashed #cbd5e0; padding: 8px 16px; border-radius: 6px; display: inline-flex; align-items: center; }
+        .badge { background: #3182ce; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 10px; }
+        
+        .blank-box { width: 36px; height: 28px; border: 1.5px solid #cbd5e0; border-radius: 4px; background-color: #fff; text-align: center; font-size: 16px; font-weight: 600; color: #2b6cb0; outline: none; padding: 0; margin: 2px; transition: all 0.3s ease; }
+        .blank-box:focus { border-color: #3182ce; background-color: #ebf8ff; box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
+        .whole-box { width: 40px; height: 40px; font-size: 20px; margin-right: 4px; }
+        .blank-box.correct { background-color: #c6f6d5 !important; border-color: #38a169 !important; color: #22543d !important; box-shadow: none; cursor: default; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📝 แบบฝึกหัดออนไลน์ เรื่อง เศษส่วนและจำนวนคละ</h1>
+        <div class="subtitle">รวมโจทย์ข้อที่ 1 - 8 | ระบบล็อกคำตอบ: ต้องทำทีละขั้นตอนให้ถูกต้อง</div>
+    </header>
+
+    <div class="instruction-box">
+        💡 <strong>คำแนะนำ:</strong> พิมพ์ตัวเลขเติมลงในช่องว่างให้ครบถ้วน <strong>เมื่อตอบถูกช่องจะเปลี่ยนเป็นสีเขียว</strong> และเมื่อทำถูกครบทุกช่อง ขั้นตอนถัดไปจะปลดล็อกให้ทำต่ออัตโนมัติครับ!
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 1</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">3</span><div class="fraction-block"><span class="num">1</span><span class="den">8</span></div></div>
+                <span class="operator">-</span>
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">1</span><span class="den">4</span></div></div>
+                <span class="bracket">)</span>
+                <span class="operator">×</span>
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">1</span><span class="den">3</span></div></div>
+                <span class="operator">-</span>
+                <div class="fraction-container"><div class="fraction-block"><span class="num">5</span><span class="den">6</span></div></div>
+                <span class="bracket">)</span>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงจำนวนคละให้เป็นเศษเกิน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="25" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="4" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">×</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="4" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: ทำตัวส่วนให้เท่ากันเพื่อทำการลบ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="25" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="10" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">×</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: คำนวณผลลบในแต่ละวงเล็บ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div>
+                        <span class="operator">×</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: ตัดทอนเป็นเศษส่วนอย่างต่ำเพื่อให้คูณง่ายขึ้น</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div>
+                        <span class="operator">×</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: หาคำตอบสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="16" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 2</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">12</span><div class="fraction-block"><span class="num">5</span><span class="den">6</span></div></div>
+                <span class="operator">÷</span>
+                <div class="fraction-container"><span class="whole-num">8</span><div class="fraction-block"><span class="num">5</span><span class="den">9</span></div></div>
+                <span class="bracket">)</span>
+                <span class="operator">-</span>
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">14</span><div class="fraction-block"><span class="num">3</span><span class="den">7</span></div></div>
+                <span class="operator">÷</span>
+                <div class="fraction-container"><span class="whole-num">12</span><div class="fraction-block"><span class="num">5</span><span class="den">8</span></div></div>
+                <span class="bracket">)</span>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงเป็นเศษเกิน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="77" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">÷</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="77" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">-</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="101" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span></div></div><span class="operator">÷</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="101" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: เปลี่ยนหารเป็นคูณ แล้วกลับเศษเป็นส่วน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="77" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="77" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">-</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="101" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span></div></div><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="101" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: ตัดทอนตัวเลข</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div>
+                        <span class="operator">-</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: ทำส่วนให้เท่ากัน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="21" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">-</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="16" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: หาคำตอบสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 3</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">5</span><div class="fraction-block"><span class="num">5</span><span class="den">6</span></div></div>
+                <span class="operator">-</span>
+                <div class="fraction-container"><span class="whole-num">3</span><div class="fraction-block"><span class="num">3</span><span class="den">8</span></div></div>
+                <span class="bracket">)</span>
+                <span class="operator">+</span>
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">2</span><span class="den">3</span></div></div>
+                <span class="operator">-</span>
+                <div class="fraction-container"><div class="fraction-block"><span class="num">7</span><span class="den">6</span></div></div>
+                <span class="bracket">)</span>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงเป็นเศษเกิน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="35" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="27" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">+</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: ทำส่วนให้เท่ากัน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="140" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="81" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">+</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="10" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: คำนวณผลลบในวงเล็บ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="59" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: ทำตัวส่วนให้เท่ากันก่อนบวก</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="59" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: บวกเศษส่วนเข้าด้วยกัน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="71" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 6: เปลี่ยนเป็นจำนวนคละ (คำตอบสุดท้าย)</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container">
+                            <input type="text" class="blank-box whole-box" data-answer="2" autocomplete="off">
+                            <div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="23" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="24" autocomplete="off"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 4</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">2</span><div class="fraction-block"><span class="num">5</span><span class="den">9</span></div></div>
+                <span class="operator">+</span>
+                <div class="fraction-container"><span class="whole-num">4</span><div class="fraction-block"><span class="num">1</span><span class="den">6</span></div></div>
+                <span class="bracket">)</span>
+                <span class="operator">-</span>
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">5</span><span class="den">15</span></div></div>
+                <span class="operator">+</span>
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">5</span><span class="den">6</span></div></div>
+                <span class="bracket">)</span>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงเป็นเศษเกิน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="23" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="25" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">-</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="20" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="11" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: ทำส่วนให้เท่ากันเพื่อบวก</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="46" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="75" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                        <span class="operator">-</span>
+                        <span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="11" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="bracket">)</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: หาผลบวกในวงเล็บ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="121" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span></div></div>
+                        <span class="operator">-</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: ทำส่วนให้เท่ากันเพื่อเตรียมลบ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="121" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span></div></div>
+                        <span class="operator">-</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="57" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: หาคำตอบสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container">
+                            <input type="text" class="blank-box whole-box" data-answer="3" autocomplete="off">
+                            <div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 5</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <div class="fraction-container"><span class="whole-num">5</span><div class="fraction-block"><span class="num">4</span><span class="den">7</span></div></div><span class="operator">-</span><div class="fraction-container"><span class="whole-num">3</span><div class="fraction-block"><span class="num">5</span><span class="den">6</span></div></div><span class="operator">+</span><div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">5</span><span class="den">21</span></div></div>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงเป็นเศษเกินทั้งหมด</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="39" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="23" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="26" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="21" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: หา ค.ร.น. และทำตัวส่วนให้เท่ากัน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="234" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="42" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="161" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="42" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="52" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="42" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: คำนวณจากซ้ายไปขวา</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="73" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="42" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="52" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="42" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: หาคำตอบสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container">
+                            <input type="text" class="blank-box whole-box" data-answer="2" autocomplete="off">
+                            <div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="41" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="42" autocomplete="off"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 6</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <div class="fraction-container"><div class="fraction-block"><span class="num">2</span><span class="den">3</span></div></div><span class="operator">-</span><span class="bracket">{</span><span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num">1</span><span class="den">4</span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num">1</span><span class="den">12</span></div></div><span class="bracket">)</span><span class="operator">÷</span><div class="fraction-container"><div class="fraction-block"><span class="num">1</span><span class="den">3</span></div></div><span class="bracket">}</span>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: ทำส่วนในวงเล็บกลมให้เท่ากัน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="operator">-</span><span class="bracket">{</span><span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span></div></div><span class="bracket">)</span><span class="operator">÷</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="bracket">}</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: ลบในวงเล็บกลม และเปลี่ยนหารเป็นคูณ (กลับเศษเป็นส่วน)</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="operator">-</span><span class="bracket">{</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span></div></div><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span></div></div><span class="bracket">}</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: คูณในวงเล็บปีกกาและทอนให้ต่ำ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: ทำส่วนให้เท่ากันเพื่อลบ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="4" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: หาคำตอบสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="6" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge">โจทย์ข้อที่ 7</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <span class="bracket">[</span><span class="bracket">{</span><span class="bracket">(</span><div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">2</span><span class="den">3</span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num">3</span><span class="den">5</span></div></div><span class="bracket">)</span><span class="operator">-</span><div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">1</span><span class="den">4</span></div></div><span class="bracket">}</span><span class="operator">×</span><div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">7</span><span class="den">8</span></div></div><span class="bracket">]</span><span class="operator">÷</span><div class="fraction-container"><span class="whole-num">5</span><div class="fraction-block"><span class="num">1</span><span class="den">12</span></div></div>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงเป็นเศษเกินทั้งหมด</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">[</span><span class="bracket">{</span><span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span></div></div><span class="bracket">)</span><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="4" autocomplete="off"></span></div></div><span class="bracket">}</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">]</span><span class="operator">÷</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: ทำส่วนให้เท่ากันในวงเล็บกลม</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">[</span><span class="bracket">{</span><span class="bracket">(</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="25" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span></div></div><span class="operator">+</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span></div></div><span class="bracket">)</span><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="4" autocomplete="off"></span></div></div><span class="bracket">}</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">]</span><span class="operator">÷</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: บวกในวงเล็บกลม และเปลี่ยนตัวหารด้านหลัง</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">[</span><span class="bracket">{</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="34" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="5" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="4" autocomplete="off"></span></div></div><span class="bracket">}</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">]</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: ทำส่วนในวงเล็บปีกกาให้เท่ากัน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">[</span><span class="bracket">{</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="136" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="60" autocomplete="off"></span></div></div><span class="operator">-</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="75" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="60" autocomplete="off"></span></div></div><span class="bracket">}</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">]</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: ผลลบวงเล็บปีกกา และเตรียมคูณในวงเล็บเหลี่ยม</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <span class="bracket">[</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="60" autocomplete="off"></span></div></div><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="15" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div><span class="bracket">]</span><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 6: ผลคูณวงเล็บเหลี่ยม (ตัดทอน 15 กับ 60)</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="32" autocomplete="off"></span></div></div><span class="operator">×</span><div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="12" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="61" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 7: หาคำตอบสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="3" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="problem-card">
+        <div class="problem-header">
+            <span class="badge" style="background-color: #e53e3e;">โจทย์ข้อที่ 8 (ข้อปราบเซียน)</span> 
+            <span>จงหาค่าของ: </span>
+            <div class="math-expr" style="margin-left:10px;">
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">5</span><span class="den">14</span></div></div>
+                <span class="operator">+</span>
+                <span class="bracket">[</span>
+                <div class="fraction-container"><span class="whole-num">3</span><div class="fraction-block"><span class="num">1</span><span class="den">9</span></div></div>
+                <span class="operator">÷</span>
+                <span class="bracket">{</span>
+                <div class="fraction-container"><span class="whole-num">2</span><div class="fraction-block"><span class="num">3</span><span class="den">16</span></div></div>
+                <span class="operator">×</span>
+                <span class="bracket">(</span>
+                <div class="fraction-container"><span class="whole-num">1</span><div class="fraction-block"><span class="num">4</span><span class="den">5</span></div></div>
+                <span class="operator">-</span>
+                <div class="fraction-container"><div class="fraction-block"><span class="num">5</span><span class="den">9</span></div></div>
+                <span class="bracket">)</span>
+                <span class="bracket">}</span>
+                <span class="bracket">]</span>
+            </div>
+        </div>
+        <div class="step-container">
+            <details class="step-item">
+                <summary>ขั้นที่ 1: แปลงเป็นเศษเกินและทำส่วนให้เท่ากันในวงเล็บกลม</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <span class="bracket">[</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="28" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div></div>
+                        <span class="operator">÷</span>
+                        <span class="bracket">{</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="35" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="16" autocomplete="off"></span></div></div>
+                        <span class="operator">×</span>
+                        <span class="bracket">(</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="81" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="45" autocomplete="off"></span></div></div>
+                        <span class="operator">-</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="25" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="45" autocomplete="off"></span></div></div>
+                        <span class="bracket">)</span>
+                        <span class="bracket">}</span>
+                        <span class="bracket">]</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 2: ลบในวงเล็บกลม</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <span class="bracket">[</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="28" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div></div>
+                        <span class="operator">÷</span>
+                        <span class="bracket">{</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="35" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="16" autocomplete="off"></span></div></div>
+                        <span class="operator">×</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="56" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="45" autocomplete="off"></span></div></div>
+                        <span class="bracket">}</span>
+                        <span class="bracket">]</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 3: คูณในวงเล็บปีกกาและทำเป็นเศษส่วนอย่างต่ำ</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <span class="bracket">[</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="28" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div></div>
+                        <span class="operator">÷</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="49" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span></div></div>
+                        <span class="bracket">]</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 4: เปลี่ยนหารเป็นคูณในวงเล็บก้ามปู และกลับเศษเป็นส่วน</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <span class="bracket">[</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="28" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="9" autocomplete="off"></span></div></div>
+                        <span class="operator">×</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="18" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="49" autocomplete="off"></span></div></div>
+                        <span class="bracket">]</span>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 5: ผลคูณวงเล็บก้ามปู</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="8" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="7" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 6: ทำส่วนให้เท่ากันเพื่อบวกเศษส่วนครั้งสุดท้าย</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="math-expr">
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="19" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                        <span class="operator">+</span>
+                        <div class="fraction-container"><div class="fraction-block"><span class="num"><input type="text" class="blank-box" data-answer="16" autocomplete="off"></span><span class="den"><input type="text" class="blank-box" data-answer="14" autocomplete="off"></span></div></div>
+                    </div>
+                </div>
+            </details>
+            <details class="step-item">
+                <summary>ขั้นที่ 7: หาคำตอบสุดท้าย (แปลงเป็นจำนวนคละ)</summary>
+                <div class="step-content">
+                    <span class="equal-sign">=</span>
+                    <div class="final-answer">
+                        <div class="fraction-container">
+                            <input type="text" class="blank-box whole-box" data-answer="2" autocomplete="off">
+                            <div class="fraction-block">
+                                <span class="num"><input type="text" class="blank-box" data-answer="1" autocomplete="off"></span>
+                                <span class="den"><input type="text" class="blank-box" data-answer="2" autocomplete="off"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.step-container').forEach(container => {
+            const steps = container.querySelectorAll('.step-item');
+            steps.forEach((step, index) => {
+                if (index === 0) {
+                    step.open = true;
+                } else {
+                    step.classList.add('locked');
+                }
+            });
+        });
+
+        document.querySelectorAll('.step-item').forEach(step => {
+            step.addEventListener('click', (e) => {
+                if (step.classList.contains('locked')) {
+                    e.preventDefault();
+                    alert('กรุณาทำขั้นตอนก่อนหน้าให้ถูกต้องครบถ้วนก่อนครับ 🔒');
+                }
+            });
+        });
+
+        const inputs = document.querySelectorAll('.blank-box');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const correctAnswer = this.getAttribute('data-answer');
+                
+                if (this.value.trim() === correctAnswer) {
+                    this.classList.add('correct');
+                    this.readOnly = true; 
+                } else {
+                    this.classList.remove('correct');
+                }
+
+                const currentStep = this.closest('.step-item');
+                const allInputsInStep = currentStep.querySelectorAll('.blank-box');
+                
+                let isStepCompleted = true;
+                allInputsInStep.forEach(inp => {
+                    if (!inp.classList.contains('correct')) {
+                        isStepCompleted = false;
+                    }
+                });
+
+                if (isStepCompleted) {
+                    currentStep.classList.add('completed');
+                    const stepContainer = currentStep.closest('.step-container');
+                    const allSteps = Array.from(stepContainer.querySelectorAll('.step-item'));
+                    const currentIndex = allSteps.indexOf(currentStep);
+                    
+                    if (currentIndex < allSteps.length - 1) {
+                        const nextStep = allSteps[currentIndex + 1];
+                        if (nextStep.classList.contains('locked')) {
+                            nextStep.classList.remove('locked');
+                            nextStep.open = true;
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
