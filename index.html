@@ -2,85 +2,91 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ (ระบบบันทึกคะแนน)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ (Mobile)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
-        body { background-color: #f0f4f8; color: #2d3748; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { max-width: 850px; width: 100%; background: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); }
+        * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; touch-action: manipulation; }
+        body { background-color: #f0f4f8; color: #2d3748; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 850px; width: 100%; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
         header { text-align: center; border-bottom: 3px solid #3182ce; padding-bottom: 12px; margin-bottom: 20px; }
-        h1 { color: #2b6cb0; margin-bottom: 10px; font-size: 24px; }
-        .subtitle { color: #718096; font-size: 16px; margin-bottom: 10px; }
+        h1 { color: #2b6cb0; margin-bottom: 8px; font-size: 22px; }
+        .subtitle { color: #718096; font-size: 15px; margin-bottom: 10px; }
         
         /* Navigation */
-        .nav-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
-        .nav-btn { padding: 10px 25px; border: none; border-radius: 8px; background-color: #e2e8f0; color: #4a5568; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 16px; }
+        .nav-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav-btn { padding: 12px 20px; border: none; border-radius: 8px; background-color: #e2e8f0; color: #4a5568; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 15px; flex: 1 1 100%; text-align: center;}
+        @media (min-width: 600px) { .nav-btn { flex: 0 1 auto; } }
         .nav-btn.active { background-color: #3182ce; color: white; box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3); }
         .nav-btn:hover:not(.active) { background-color: #cbd5e0; }
         
-        .instruction-box { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; border-radius: 4px; margin-bottom: 25px; font-size: 15px; }
+        .instruction-box { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; line-height: 1.5; }
         
         /* Problems */
-        .problem-card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; }
-        .problem-header { font-size: 18px; font-weight: bold; color: #2c5282; margin-bottom: 15px; display: flex; align-items: center; flex-wrap: wrap; }
-        .badge { background: #3182ce; color: white; padding: 4px 10px; border-radius: 4px; font-size: 14px; margin-right: 12px; }
+        .problem-card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; overflow: hidden; }
+        .problem-header { font-size: 16px; font-weight: bold; color: #2c5282; margin-bottom: 15px; display: flex; align-items: flex-start; flex-direction: column; gap: 8px; }
+        @media (min-width: 600px) { .problem-header { flex-direction: row; align-items: center; } }
+        .badge { background: #3182ce; color: white; padding: 4px 10px; border-radius: 4px; font-size: 13px; }
         
         /* Steps */
-        .step-container { margin-top: 15px; }
-        details { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; padding: 12px 15px; transition: all 0.2s ease; }
-        details[open] { border-color: #4299e1; box-shadow: 0 4px 6px rgba(66, 153, 225, 0.1); }
-        summary { font-weight: 600; color: #4a5568; cursor: pointer; outline: none; user-select: none; }
-        summary:hover { color: #3182ce; }
+        .step-container { margin-top: 10px; }
+        details { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; padding: 10px 12px; transition: all 0.2s ease; }
+        details[open] { border-color: #4299e1; box-shadow: 0 2px 4px rgba(66, 153, 225, 0.1); }
+        summary { font-weight: 600; color: #4a5568; cursor: pointer; outline: none; user-select: none; font-size: 15px; }
         details.locked { background-color: #f7fafc; opacity: 0.8; }
         details.locked summary { color: #a0aec0; cursor: not-allowed; }
-        details.locked summary:hover { color: #a0aec0; }
-        details.locked summary::after { content: " 🔒 (ปลดล็อกเมื่อทำขั้นก่อนหน้าเสร็จ)"; font-size: 14px; color: #e53e3e; font-weight: normal; margin-left: 10px;}
+        details.locked summary::after { content: " 🔒"; font-size: 12px; color: #e53e3e; }
         details.completed { border-color: #38a169; }
-        details.completed summary::after { content: " ✅ ตอบถูกแล้ว"; font-size: 14px; color: #38a169; margin-left: 10px;}
-        .step-content { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; flex-wrap: wrap; font-size: 16px; }
+        details.completed summary::after { content: " ✅"; font-size: 12px; color: #38a169; }
+        
+        /* Scrollable Math Expression for Mobile */
+        .step-content { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; font-size: 16px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+        .math-expr { display: inline-flex; align-items: center; flex-wrap: nowrap; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px solid #edf2f7; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+        
+        /* Custom Scrollbar */
+        .step-content::-webkit-scrollbar, .math-expr::-webkit-scrollbar { height: 5px; }
+        .step-content::-webkit-scrollbar-thumb, .math-expr::-webkit-scrollbar-thumb { background-color: #cbd5e0; border-radius: 10px; }
         
         /* Math layout */
-        .math-expr { display: inline-flex; align-items: center; flex-wrap: wrap; background: #fff; padding: 6px 12px; border-radius: 6px; border: 1px solid #edf2f7; }
-        .fraction-container { display: inline-flex; align-items: center; margin: 0 4px; }
-        .whole-num { font-size: 20px; font-weight: bold; margin-right: 2px; }
+        .fraction-container { display: inline-flex; align-items: center; margin: 0 3px; }
+        .whole-num { font-size: 18px; font-weight: bold; margin-right: 2px; }
         .fraction-block { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
         .num { border-bottom: 2px solid #2d3748; padding: 0 4px 4px 4px; font-weight: 600; }
         .den { padding: 4px 4px 0 4px; font-weight: 600; }
-        .operator { font-size: 20px; margin: 0 8px; font-weight: bold; color: #e53e3e; }
-        .bracket { font-size: 28px; font-weight: 300; color: #4a5568; margin: 0 2px; }
-        .equal-sign { font-size: 20px; margin: 0 10px; font-weight: bold; color: #2b6cb0; }
-        .final-answer { background-color: #fff; border: 2px dashed #cbd5e0; padding: 8px 16px; border-radius: 6px; display: inline-flex; align-items: center; }
+        .operator { font-size: 18px; margin: 0 6px; font-weight: bold; color: #e53e3e; }
+        .bracket { font-size: 26px; font-weight: 300; color: #4a5568; margin: 0 1px; }
+        .equal-sign { font-size: 18px; margin: 0 8px; font-weight: bold; color: #2b6cb0; flex-shrink: 0; }
+        .final-answer { background-color: #fff; border: 2px dashed #cbd5e0; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; }
         
         /* Complex Fractions */
-        .cf-container { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 8px; vertical-align: middle; }
-        .cf-num { border-bottom: 3px solid #2b6cb0; padding: 0 8px 6px 8px; display: flex; align-items: center; justify-content: center; }
-        .cf-den { padding: 6px 8px 0 8px; display: flex; align-items: center; justify-content: center; }
+        .cf-container { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 6px; vertical-align: middle; }
+        .cf-num { border-bottom: 3px solid #2b6cb0; padding: 0 6px 6px 6px; display: flex; align-items: center; justify-content: center; }
+        .cf-den { padding: 6px 6px 0 6px; display: flex; align-items: center; justify-content: center; }
 
-        /* Inputs */
-        .blank-box { width: 36px; height: 28px; border: 1.5px solid #cbd5e0; border-radius: 4px; background-color: #fff; text-align: center; font-size: 16px; font-weight: 600; color: #2b6cb0; outline: none; padding: 0; margin: 2px; transition: all 0.3s ease; }
+        /* Inputs (Optimized for fat fingers & No Auto-Zoom) */
+        .blank-box { width: 38px; height: 32px; border: 1.5px solid #cbd5e0; border-radius: 6px; background-color: #fff; text-align: center; font-size: 16px !important; font-weight: 600; color: #2b6cb0; outline: none; padding: 0; margin: 2px; transition: all 0.2s ease; }
         .blank-box:focus { border-color: #3182ce; background-color: #ebf8ff; box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
-        .whole-box { width: 40px; height: 40px; font-size: 20px; margin-right: 4px; }
-        .blank-box.correct { background-color: #c6f6d5 !important; border-color: #38a169 !important; color: #22543d !important; box-shadow: none; cursor: default; }
+        .whole-box { width: 42px; height: 42px; font-size: 18px !important; margin-right: 4px; }
+        .blank-box.correct { background-color: #c6f6d5 !important; border-color: #38a169 !important; color: #22543d !important; box-shadow: none; cursor: default; pointer-events: none;}
         
         /* Summary Page */
-        .summary-container { text-align: center; padding: 20px; }
-        .score-circle { width: 160px; height: 160px; border-radius: 50%; border: 10px solid #3182ce; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: bold; color: #2b6cb0; margin: 0 auto 30px auto; background: #ebf8ff;}
-        .score-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; max-width: 600px; margin: 0 auto; }
-        .score-item { padding: 15px; border-radius: 8px; font-weight: bold; font-size: 16px; border: 2px solid #e2e8f0; background: #f7fafc;}
+        .summary-container { text-align: center; padding: 10px; }
+        .score-circle { width: 140px; height: 140px; border-radius: 50%; border: 8px solid #3182ce; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; color: #2b6cb0; margin: 0 auto 20px auto; background: #ebf8ff;}
+        .score-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; max-width: 600px; margin: 0 auto; }
+        .score-item { padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 2px solid #e2e8f0; background: #f7fafc;}
         .score-item.pass { border-color: #38a169; background: #f0fff4; color: #2f855a; }
         .score-item.fail { border-color: #e53e3e; background: #fff5f5; color: #c53030; }
-        .section-title { text-align: left; color: #2c5282; max-width: 600px; margin: 0 auto 15px auto; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;}
+        .section-title { text-align: left; color: #2c5282; max-width: 600px; margin: 0 auto 10px auto; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;}
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>📝 แบบฝึกหัดออนไลน์: เศษส่วนและจำนวนคละ</h1>
-        <div class="subtitle">แสดงวิธีทำทีละขั้นตอน พร้อมระบบตรวจคำตอบ</div>
+        <h1>📝 แบบฝึกหัด: เศษส่วนและจำนวนคละ</h1>
+        <div class="subtitle">ระบบตรวจคำตอบ (ปัดซ้าย-ขวา เพื่อดูสมการเต็ม)</div>
     </header>
 
     <div class="nav-buttons" id="navContainer">
@@ -93,8 +99,8 @@
 </div>
 
 <script>
-    // --- Helper Functions สำหรับสร้าง HTML ---
-    function i(ans, isWhole=false) { return `<input type="text" class="blank-box ${isWhole?'whole-box':''}" data-answer="${ans}" autocomplete="off">`; }
+    // --- Helper Functions (เพิ่ม inputmode="numeric" และ pattern="[0-9]*" เพื่อเรียกแป้นพิมพ์ตัวเลข) ---
+    function i(ans, isWhole=false) { return `<input type="text" inputmode="numeric" pattern="[0-9]*" class="blank-box ${isWhole?'whole-box':''}" data-answer="${ans}" autocomplete="off">`; }
     function f(n, d) { return `<div class="fraction-container"><div class="fraction-block"><span class="num">${n}</span><span class="den">${d}</span></div></div>`; }
     function wf(w, n, d) { return `<div class="fraction-container"><span class="whole-num">${w}</span><div class="fraction-block"><span class="num">${n}</span><span class="den">${d}</span></div></div>`; }
     function cf(n, d) { return `<div class="cf-container"><div class="cf-num">${n}</div><div class="cf-den">${d}</div></div>`; }
@@ -257,18 +263,16 @@
 
     // --- Render Engine ---
     function renderProblems(dataArray) {
-        let html = `<div class="instruction-box">💡 <strong>คำแนะนำ:</strong> พิมพ์ตัวเลขให้ครบถ้วน <strong>เมื่อตอบถูกช่องจะเปลี่ยนเป็นสีเขียว ✅</strong> และปลดล็อกขั้นตอนถัดไปอัตโนมัติ!</div>`;
+        let html = `<div class="instruction-box">💡 <strong>คำแนะนำ:</strong> จิ้มที่ช่องสี่เหลี่ยมแล้วเติมตัวเลขด้วยแป้นพิมพ์ <strong>ตอบถูกช่องจะเปลี่ยนเป็นสีเขียว ✅</strong> (สามารถเลื่อนปัดซ้าย-ขวา เพื่อดูสมการที่ยาวๆ ได้ครับ)</div>`;
         
         dataArray.forEach((prob, index) => {
-            // คำนวณเลขข้อสำหรับแสดงผล (index + 1) ทำให้รันเลข 1, 2, 3... เสมอในหน้านั้นๆ
             let displayNum = index + 1; 
 
             html += `
             <div class="problem-card" id="prob-${prob.id}">
                 <div class="problem-header">
-                    <span class="badge">โจทย์ข้อที่ ${displayNum}</span> 
-                    <span>จงหาค่าของ: </span>
-                    <div class="math-expr" style="margin-left:10px;">${prob.q}</div>
+                    <span class="badge">ข้อที่ ${displayNum}</span> 
+                    <div class="math-expr">${prob.q}</div>
                 </div>
                 <div class="step-container">`;
             
@@ -298,12 +302,11 @@
         <div class="summary-container">
             <h2>ผลคะแนนรวมของคุณ</h2>
             <div class="score-circle">${correctCount} / ${total}</div>
-            <p style="color: #4a5568; margin-bottom: 30px;">คุณทำโจทย์เสร็จสมบูรณ์ไปแล้ว <strong>${correctCount}</strong> ข้อ จากทั้งหมด ${total} ข้อ</p>
+            <p style="color: #4a5568; margin-bottom: 20px;">คุณทำโจทย์เสร็จสมบูรณ์ไปแล้ว <strong>${correctCount}</strong> ข้อ จากทั้งหมด ${total} ข้อ</p>
             
             <h3 class="section-title">📄 หน้าที่ 1</h3>
-            <div class="score-list" style="margin-bottom: 30px;">`;
+            <div class="score-list" style="margin-bottom: 25px;">`;
             
-        // ดึงคะแนนหน้าที่ 1 (id: 1-8)
         for(let i = 1; i <= 8; i++) {
             let passed = scores[i];
             html += `<div class="score-item ${passed ? 'pass' : 'fail'}">
@@ -315,7 +318,6 @@
             <h3 class="section-title">📄 หน้าที่ 2</h3>
             <div class="score-list">`;
             
-        // ดึงคะแนนหน้าที่ 2 (id: 9-18) และแปลงเลขข้อกลับมาเป็น 1-10
         for(let i = 9; i <= 18; i++) {
             let passed = scores[i];
             html += `<div class="score-item ${passed ? 'pass' : 'fail'}">
@@ -330,6 +332,7 @@
     function switchPage(page) {
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนกลับไปบนสุดเมื่อสลับหน้า
         
         if (page === 'page1') renderProblems(page1Data);
         else if (page === 'page2') renderProblems(page2Data);
@@ -374,6 +377,9 @@
                 if (this.value.trim() === correctAnswer) {
                     this.classList.add('correct');
                     this.readOnly = true; 
+                    
+                    // ป้องกัน Keyboard เด้งค้างหลังพิมพ์ถูก (เพิ่ม UX มือถือ)
+                    this.blur(); 
                 } else {
                     this.classList.remove('correct');
                 }
