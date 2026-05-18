@@ -36,11 +36,12 @@
         .step-container { margin-top: 10px; }
         details { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; padding: 10px 12px; transition: all 0.2s ease; }
         details[open] { border-color: #4299e1; box-shadow: 0 2px 4px rgba(66, 153, 225, 0.1); }
-        summary { font-weight: 600; color: #4a5568; cursor: pointer; outline: none; user-select: none; font-size: 15px; }
+        summary { font-weight: 600; color: #3182ce; cursor: pointer; outline: none; user-select: none; font-size: 15px; }
+        .step-desc { font-weight: normal; color: #4a5568; margin-left: 4px; }
         details.completed { border-color: #38a169; }
         details.completed summary::after { content: " ✅"; font-size: 12px; color: #38a169; }
         
-        /* Scrollable Math Expression for Mobile */
+        /* Scrollable Math Expression */
         .step-content { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; font-size: 16px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
         .math-expr { display: inline-flex; align-items: center; flex-wrap: nowrap; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px solid #edf2f7; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
         
@@ -86,7 +87,7 @@
 <div class="container">
     <header>
         <h1>📝 แบบฝึกหัด: เศษส่วนและจำนวนคละ</h1>
-        <div class="subtitle">ระบบตรวจคำตอบอิสระ (ตอบแค่คำตอบสุดท้ายก็ถือว่าผ่าน)</div>
+        <div class="subtitle">ระบบตรวจคำตอบอิสระ (ตอบคำตอบสุดท้ายถูก ถือว่าผ่าน!)</div>
     </header>
 
     <div class="nav-buttons" id="navContainer">
@@ -114,144 +115,142 @@
     function eq() { return `<span class="equal-sign">=</span>`; }
 
     // --- Data Definitions ---
-    // id 1-8 สำหรับหน้าที่ 1
     const page1Data = [
         { id: 1, q: br(wf(3,1,8) + op('-') + wf(1,1,4)) + op('×') + br(wf(1,1,3) + op('-') + f(5,6)), steps: [
-            br(f(i(25),i(8)) + op('-') + f(i(5),i(4))) + op('×') + br(f(i(4),i(3)) + op('-') + f(i(5),i(6))),
-            br(f(i(25),i(8)) + op('-') + f(i(10),i(8))) + op('×') + br(f(i(8),i(6)) + op('-') + f(i(5),i(6))),
-            f(i(15),i(8)) + op('×') + f(i(3),i(6)),
-            f(i(15),i(8)) + op('×') + f(i(1),i(2)),
-            ans(f(i(15),i(16)))
+            { text: "แปลงจำนวนคละทั้งหมดให้เป็นเศษเกิน", math: br(f(i(25),i(8)) + op('-') + f(i(5),i(4))) + op('×') + br(f(i(4),i(3)) + op('-') + f(i(5),i(6))) },
+            { text: "ทำตัวส่วนในแต่ละวงเล็บให้เท่ากันเพื่อทำการลบ", math: br(f(i(25),i(8)) + op('-') + f(i(10),i(8))) + op('×') + br(f(i(8),i(6)) + op('-') + f(i(5),i(6))) },
+            { text: "คำนวณผลลบในแต่ละวงเล็บ", math: f(i(15),i(8)) + op('×') + f(i(3),i(6)) },
+            { text: "ตัดทอนเป็นเศษส่วนอย่างต่ำเพื่อให้คูณง่ายขึ้น", math: f(i(15),i(8)) + op('×') + f(i(1),i(2)) },
+            { text: "นำเศษคูณเศษ ส่วนคูณส่วน", math: ans(f(i(15),i(16))) }
         ]},
         { id: 2, q: br(wf(12,5,6) + op('÷') + wf(8,5,9)) + op('-') + br(wf(14,3,7) + op('÷') + wf(12,5,8)), steps: [
-            br(f(i(77),i(6)) + op('÷') + f(i(77),i(9))) + op('-') + br(f(i(101),i(7)) + op('÷') + f(i(101),i(8))),
-            br(f(i(77),i(6)) + op('×') + f(i(9),i(77))) + op('-') + br(f(i(101),i(7)) + op('×') + f(i(8),i(101))),
-            f(i(9),i(6)) + op('-') + f(i(8),i(7)),
-            f(i(3),i(2)) + op('-') + f(i(8),i(7)) + eq() + f(i(21),i(14)) + op('-') + f(i(16),i(14)),
-            ans(f(i(5),i(14)))
+            { text: "แปลงจำนวนคละทั้งหมดให้เป็นเศษเกิน", math: br(f(i(77),i(6)) + op('÷') + f(i(77),i(9))) + op('-') + br(f(i(101),i(7)) + op('÷') + f(i(101),i(8))) },
+            { text: "เปลี่ยนเครื่องหมายหารเป็นคูณ แล้วกลับเศษเป็นส่วน", math: br(f(i(77),i(6)) + op('×') + f(i(9),i(77))) + op('-') + br(f(i(101),i(7)) + op('×') + f(i(8),i(101))) },
+            { text: "ตัดทอนตัวเลขในแต่ละวงเล็บ", math: f(i(9),i(6)) + op('-') + f(i(8),i(7)) },
+            { text: "ทอนเป็นเศษส่วนอย่างต่ำและทำส่วนให้เท่ากัน", math: f(i(3),i(2)) + op('-') + f(i(8),i(7)) + eq() + f(i(21),i(14)) + op('-') + f(i(16),i(14)) },
+            { text: "ลบเศษส่วน", math: ans(f(i(5),i(14))) }
         ]},
         { id: 3, q: br(wf(5,5,6) + op('-') + wf(3,3,8)) + op('+') + br(wf(1,2,3) + op('-') + f(7,6)), steps: [
-            br(f(i(35),i(6)) + op('-') + f(i(27),i(8))) + op('+') + br(f(i(5),i(3)) + op('-') + f(i(7),i(6))),
-            br(f(i(140),i(24)) + op('-') + f(i(81),i(24))) + op('+') + br(f(i(10),i(6)) + op('-') + f(i(7),i(6))),
-            f(i(59),i(24)) + op('+') + f(i(3),i(6)),
-            f(i(59),i(24)) + op('+') + f(i(12),i(24)),
-            f(i(71),i(24)),
-            ans(wf(i(2,true),i(23),i(24)))
+            { text: "แปลงจำนวนคละให้เป็นเศษเกิน", math: br(f(i(35),i(6)) + op('-') + f(i(27),i(8))) + op('+') + br(f(i(5),i(3)) + op('-') + f(i(7),i(6))) },
+            { text: "ทำส่วนในแต่ละวงเล็บให้เท่ากัน", math: br(f(i(140),i(24)) + op('-') + f(i(81),i(24))) + op('+') + br(f(i(10),i(6)) + op('-') + f(i(7),i(6))) },
+            { text: "คำนวณผลลบในแต่ละวงเล็บ", math: f(i(59),i(24)) + op('+') + f(i(3),i(6)) },
+            { text: "ทำตัวส่วนให้เท่ากันก่อนนำมาบวกกัน", math: f(i(59),i(24)) + op('+') + f(i(12),i(24)) },
+            { text: "บวกเศษส่วนเข้าด้วยกัน", math: f(i(71),i(24)) },
+            { text: "เปลี่ยนจากเศษเกินให้เป็นจำนวนคละ", math: ans(wf(i(2,true),i(23),i(24))) }
         ]},
         { id: 4, q: br(wf(2,5,9) + op('+') + wf(4,1,6)) + op('-') + br(wf(1,5,15) + op('+') + wf(1,5,6)), steps: [
-            br(f(i(23),i(9)) + op('+') + f(i(25),i(6))) + op('-') + br(f(i(20),i(15)) + op('+') + f(i(11),i(6))),
-            br(f(i(46),i(18)) + op('+') + f(i(75),i(18))) + op('-') + br(f(i(8),i(6)) + op('+') + f(i(11),i(6))),
-            f(i(121),i(18)) + op('-') + f(i(19),i(6)),
-            f(i(121),i(18)) + op('-') + f(i(57),i(18)),
-            ans(wf(i(3,true),i(5),i(9)))
+            { text: "แปลงจำนวนคละเป็นเศษเกิน", math: br(f(i(23),i(9)) + op('+') + f(i(25),i(6))) + op('-') + br(f(i(20),i(15)) + op('+') + f(i(11),i(6))) },
+            { text: "ทำส่วนให้เท่ากันเพื่อบวก (ทอนวงเล็บหลังเป็นอย่างต่ำก่อน)", math: br(f(i(46),i(18)) + op('+') + f(i(75),i(18))) + op('-') + br(f(i(8),i(6)) + op('+') + f(i(11),i(6))) },
+            { text: "หาผลบวกในแต่ละวงเล็บ", math: f(i(121),i(18)) + op('-') + f(i(19),i(6)) },
+            { text: "ทำส่วนให้เท่ากันเพื่อเตรียมลบ", math: f(i(121),i(18)) + op('-') + f(i(57),i(18)) },
+            { text: "ลบและแปลงเป็นจำนวนคละ", math: ans(wf(i(3,true),i(5),i(9))) }
         ]},
         { id: 5, q: wf(5,4,7) + op('-') + wf(3,5,6) + op('+') + wf(1,5,21), steps: [
-            f(i(39),i(7)) + op('-') + f(i(23),i(6)) + op('+') + f(i(26),i(21)),
-            f(i(234),i(42)) + op('-') + f(i(161),i(42)) + op('+') + f(i(52),i(42)),
-            f(i(73),i(42)) + op('+') + f(i(52),i(42)),
-            ans(wf(i(2,true),i(41),i(42)))
+            { text: "แปลงจำนวนคละเป็นเศษเกินทั้งหมด", math: f(i(39),i(7)) + op('-') + f(i(23),i(6)) + op('+') + f(i(26),i(21)) },
+            { text: "หา ค.ร.น. และทำตัวส่วนให้เท่ากัน", math: f(i(234),i(42)) + op('-') + f(i(161),i(42)) + op('+') + f(i(52),i(42)) },
+            { text: "คำนวณจากซ้ายไปขวา (ลบตัวหน้าก่อน)", math: f(i(73),i(42)) + op('+') + f(i(52),i(42)) },
+            { text: "บวกและแปลงเป็นจำนวนคละ", math: ans(wf(i(2,true),i(41),i(42))) }
         ]},
         { id: 6, q: f(2,3) + op('-') + br( br(f(1,4) + op('-') + f(1,12)) + op('÷') + f(1,3) , 'curly'), steps: [
-            f(i(2),i(3)) + op('-') + br( br(f(i(3),i(12)) + op('-') + f(i(1),i(12))) + op('÷') + f(i(1),i(3)) , 'curly'),
-            f(i(2),i(3)) + op('-') + br( f(i(2),i(12)) + op('×') + f(i(3),i(1)) , 'curly'),
-            f(i(2),i(3)) + op('-') + f(i(1),i(2)),
-            f(i(4),i(6)) + op('-') + f(i(3),i(6)),
-            ans(f(i(1),i(6)))
+            { text: "ทำส่วนในวงเล็บกลมให้เท่ากัน", math: f(i(2),i(3)) + op('-') + br( br(f(i(3),i(12)) + op('-') + f(i(1),i(12))) + op('÷') + f(i(1),i(3)) , 'curly') },
+            { text: "ลบในวงเล็บกลม และเปลี่ยนหารเป็นคูณ", math: f(i(2),i(3)) + op('-') + br( f(i(2),i(12)) + op('×') + f(i(3),i(1)) , 'curly') },
+            { text: "คูณในวงเล็บปีกกาและทอนให้ต่ำ", math: f(i(2),i(3)) + op('-') + f(i(1),i(2)) },
+            { text: "ทำส่วนให้เท่ากันเพื่อลบ", math: f(i(4),i(6)) + op('-') + f(i(3),i(6)) },
+            { text: "หาคำตอบสุดท้าย", math: ans(f(i(1),i(6))) }
         ]},
         { id: 7, q: br( br( br(wf(1,2,3) + op('+') + f(3,5)) + op('-') + wf(1,1,4) , 'curly') + op('×') + wf(1,7,8) , 'square') + op('÷') + wf(5,1,12), steps: [
-            br( br( br(f(i(5),i(3)) + op('+') + f(i(3),i(5))) + op('-') + f(i(5),i(4)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('÷') + f(i(61),i(12)),
-            br( br( br(f(i(25),i(15)) + op('+') + f(i(9),i(15))) + op('-') + f(i(5),i(4)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('÷') + f(i(61),i(12)),
-            br( br( f(i(34),i(15)) + op('-') + f(i(5),i(4)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('×') + f(i(12),i(61)),
-            br( br( f(i(136),i(60)) + op('-') + f(i(75),i(60)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('×') + f(i(12),i(61)),
-            br( f(i(61),i(60)) + op('×') + f(i(15),i(8)) , 'square') + op('×') + f(i(12),i(61)),
-            f(i(61),i(32)) + op('×') + f(i(12),i(61)),
-            ans(f(i(3),i(8)))
+            { text: "แปลงเป็นเศษเกินทั้งหมด", math: br( br( br(f(i(5),i(3)) + op('+') + f(i(3),i(5))) + op('-') + f(i(5),i(4)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('÷') + f(i(61),i(12)) },
+            { text: "ทำส่วนให้เท่ากันเพื่อบวกในวงเล็บกลม", math: br( br( br(f(i(25),i(15)) + op('+') + f(i(9),i(15))) + op('-') + f(i(5),i(4)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('÷') + f(i(61),i(12)) },
+            { text: "บวกในวงเล็บกลม และเปลี่ยนตัวหารด้านหลังเป็นคูณ", math: br( br( f(i(34),i(15)) + op('-') + f(i(5),i(4)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('×') + f(i(12),i(61)) },
+            { text: "ทำส่วนในวงเล็บปีกกาให้เท่ากัน", math: br( br( f(i(136),i(60)) + op('-') + f(i(75),i(60)) , 'curly') + op('×') + f(i(15),i(8)) , 'square') + op('×') + f(i(12),i(61)) },
+            { text: "ผลลบวงเล็บปีกกา และเตรียมคูณในวงเล็บเหลี่ยม", math: br( f(i(61),i(60)) + op('×') + f(i(15),i(8)) , 'square') + op('×') + f(i(12),i(61)) },
+            { text: "ผลคูณวงเล็บเหลี่ยม (ตัดทอนตัวเลข)", math: f(i(61),i(32)) + op('×') + f(i(12),i(61)) },
+            { text: "หาคำตอบสุดท้าย", math: ans(f(i(3),i(8))) }
         ]},
         { id: 8, q: wf(1,5,14) + op('+') + br( wf(3,1,9) + op('÷') + br( wf(2,3,16) + op('×') + br( wf(1,4,5) + op('-') + f(5,9) ), 'curly') , 'square'), steps: [
-            f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('÷') + br( f(i(35),i(16)) + op('×') + br( f(i(81),i(45)) + op('-') + f(i(25),i(45)) ) , 'curly') , 'square'),
-            f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('÷') + br( f(i(35),i(16)) + op('×') + f(i(56),i(45)) , 'curly') , 'square'),
-            f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('÷') + f(i(49),i(18)) , 'square'),
-            f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('×') + f(i(18),i(49)) , 'square'),
-            f(i(19),i(14)) + op('+') + f(i(8),i(7)),
-            f(i(19),i(14)) + op('+') + f(i(16),i(14)),
-            ans(wf(i(2,true),i(1),i(2)))
+            { text: "แปลงเป็นเศษเกินและทำส่วนให้เท่ากันในวงเล็บกลม", math: f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('÷') + br( f(i(35),i(16)) + op('×') + br( f(i(81),i(45)) + op('-') + f(i(25),i(45)) ) , 'curly') , 'square') },
+            { text: "ลบในวงเล็บกลม", math: f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('÷') + br( f(i(35),i(16)) + op('×') + f(i(56),i(45)) , 'curly') , 'square') },
+            { text: "คูณในวงเล็บปีกกาและทำเป็นเศษส่วนอย่างต่ำ", math: f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('÷') + f(i(49),i(18)) , 'square') },
+            { text: "เปลี่ยนหารเป็นคูณในวงเล็บก้ามปู และกลับเศษเป็นส่วน", math: f(i(19),i(14)) + op('+') + br( f(i(28),i(9)) + op('×') + f(i(18),i(49)) , 'square') },
+            { text: "ผลคูณวงเล็บก้ามปู", math: f(i(19),i(14)) + op('+') + f(i(8),i(7)) },
+            { text: "ทำส่วนให้เท่ากันเพื่อบวกเศษส่วน", math: f(i(19),i(14)) + op('+') + f(i(16),i(14)) },
+            { text: "หาคำตอบสุดท้าย (แปลงเป็นจำนวนคละ)", math: ans(wf(i(2,true),i(1),i(2))) }
         ]}
     ];
 
-    // id 9-18 สำหรับหน้าที่ 2
     const page2Data = [
         { id: 9, q: cf(f(2,3), '4') + op('+') + cf('5', f(6,7)), steps: [
-            br( f(i(2),i(3)) + op('×') + f(i(1),i(4)) ) + op('+') + br( i(5) + op('×') + f(i(7),i(6)) ),
-            f(i(2),i(12)) + op('+') + f(i(35),i(6)),
-            f(i(1),i(6)) + op('+') + f(i(35),i(6)),
-            f(i(36),i(6)),
-            ans(i(6))
+            { text: "แยกเศษส่วนซ้อนให้อยู่ในรูปการคูณ", math: br( f(i(2),i(3)) + op('×') + f(i(1),i(4)) ) + op('+') + br( i(5) + op('×') + f(i(7),i(6)) ) },
+            { text: "หาผลคูณของแต่ละวงเล็บ", math: f(i(2),i(12)) + op('+') + f(i(35),i(6)) },
+            { text: "จัดรูปและทำตัวส่วนให้เท่ากันเพื่อบวก", math: f(i(1),i(6)) + op('+') + f(i(35),i(6)) },
+            { text: "บวกเศษส่วน", math: f(i(36),i(6)) },
+            { text: "ทอนเป็นจำนวนเต็ม", math: ans(i(6)) }
         ]},
         { id: 10, q: cf(f(3,4), '5') + op('×') + cf(f(6,7), '8'), steps: [
-            br( f(i(3),i(4)) + op('×') + f(i(1),i(5)) ) + op('×') + br( f(i(6),i(7)) + op('×') + f(i(1),i(8)) ),
-            f(i(3),i(20)) + op('×') + f(i(6),i(56)),
-            f(i(3),i(20)) + op('×') + f(i(3),i(28)),
-            ans(f(i(9),i(560)))
+            { text: "แยกพจน์เศษส่วนซ้อนเป็นวงเล็บคูณกัน", math: br( f(i(3),i(4)) + op('×') + f(i(1),i(5)) ) + op('×') + br( f(i(6),i(7)) + op('×') + f(i(1),i(8)) ) },
+            { text: "หาผลคูณในแต่ละวงเล็บ", math: f(i(3),i(20)) + op('×') + f(i(6),i(56)) },
+            { text: "ตัดทอนและหาผลคูณ", math: f(i(3),i(20)) + op('×') + f(i(3),i(28)) },
+            { text: "หาคำตอบสุดท้าย", math: ans(f(i(9),i(560))) }
         ]},
         { id: 11, q: cf(f(2,3) + op('+') + f(4,5), wf(1,1,10)), steps: [
-            cf( f(i(10),i(15)) + op('+') + f(i(12),i(15)) , f(i(11),i(10)) ),
-            f(i(22),i(15)) + op('÷') + f(i(11),i(10)),
-            f(i(22),i(15)) + op('×') + f(i(10),i(11)),
-            f(i(4),i(3)),
-            ans(wf(i(1,true),i(1),i(3)))
+            { text: "ทำตัวส่วนให้เท่ากันด้านบน และแปลงจำนวนคละด้านล่าง", math: cf( f(i(10),i(15)) + op('+') + f(i(12),i(15)) , f(i(11),i(10)) ) },
+            { text: "เขียนเศษส่วนซ้อนในรูปการหาร", math: f(i(22),i(15)) + op('÷') + f(i(11),i(10)) },
+            { text: "เปลี่ยนหารเป็นคูณและกลับเศษเป็นส่วน", math: f(i(22),i(15)) + op('×') + f(i(10),i(11)) },
+            { text: "หาผลคูณ (เป็นเศษเกิน)", math: f(i(4),i(3)) },
+            { text: "แปลงเป็นจำนวนคละ", math: ans(wf(i(1,true),i(1),i(3))) }
         ]},
         { id: 12, q: cf(f(4,5) + op('-') + f(6,11), f(7,22)), steps: [
-            cf( f(i(44),i(55)) + op('-') + f(i(30),i(55)) , f(i(7),i(22)) ),
-            f(i(14),i(55)) + op('÷') + f(i(7),i(22)),
-            f(i(14),i(55)) + op('×') + f(i(22),i(7)),
-            ans(f(i(4),i(5)))
+            { text: "ทำตัวส่วนให้เท่ากันด้านบน", math: cf( f(i(44),i(55)) + op('-') + f(i(30),i(55)) , f(i(7),i(22)) ) },
+            { text: "เขียนเศษส่วนซ้อนในรูปการหาร", math: f(i(14),i(55)) + op('÷') + f(i(7),i(22)) },
+            { text: "เปลี่ยนหารเป็นคูณและตัดทอนตัวเลข", math: f(i(14),i(55)) + op('×') + f(i(22),i(7)) },
+            { text: "หาผลคูณสุดท้าย", math: ans(f(i(4),i(5))) }
         ]},
         { id: 13, q: cf(f(10,7) + op('-') + f(2,3), f(6,5) + op('-') + f(2,3)), steps: [
-            cf( f(i(30),i(21)) + op('-') + f(i(14),i(21)) , f(i(18),i(15)) + op('-') + f(i(10),i(15)) ),
-            f(i(16),i(21)) + op('÷') + f(i(8),i(15)),
-            f(i(16),i(21)) + op('×') + f(i(15),i(8)),
-            f(i(10),i(7)),
-            ans(wf(i(1,true),i(3),i(7)))
+            { text: "ทำตัวส่วนให้เท่ากันทั้งด้านบนและด้านล่าง", math: cf( f(i(30),i(21)) + op('-') + f(i(14),i(21)) , f(i(18),i(15)) + op('-') + f(i(10),i(15)) ) },
+            { text: "เขียนเศษส่วนซ้อนในรูปการหาร", math: f(i(16),i(21)) + op('÷') + f(i(8),i(15)) },
+            { text: "เปลี่ยนหารเป็นคูณและกลับเศษเป็นส่วน", math: f(i(16),i(21)) + op('×') + f(i(15),i(8)) },
+            { text: "หาผลคูณ (เป็นเศษเกิน)", math: f(i(10),i(7)) },
+            { text: "แปลงเป็นจำนวนคละ", math: ans(wf(i(1,true),i(3),i(7))) }
         ]},
         { id: 14, q: cf(f(5,6), '7') + op('+') + cf('2', f(3,4)), steps: [
-            br( f(i(5),i(6)) + op('×') + f(i(1),i(7)) ) + op('+') + br( i(2) + op('×') + f(i(4),i(3)) ),
-            f(i(5),i(42)) + op('+') + f(i(8),i(3)),
-            f(i(5),i(42)) + op('+') + f(i(112),i(42)),
-            f(i(117),i(42)),
-            f(i(39),i(14)),
-            ans(wf(i(2,true),i(11),i(14)))
+            { text: "แยกพจน์เศษส่วนซ้อนให้อยู่ในรูปการคูณ", math: br( f(i(5),i(6)) + op('×') + f(i(1),i(7)) ) + op('+') + br( i(2) + op('×') + f(i(4),i(3)) ) },
+            { text: "หาผลคูณของแต่ละวงเล็บ", math: f(i(5),i(42)) + op('+') + f(i(8),i(3)) },
+            { text: "ทำตัวส่วนให้เท่ากันเพื่อบวก", math: f(i(5),i(42)) + op('+') + f(i(112),i(42)) },
+            { text: "หาผลบวก", math: f(i(117),i(42)) },
+            { text: "ทอนเป็นเศษส่วนอย่างต่ำ", math: f(i(39),i(14)) },
+            { text: "แปลงเป็นจำนวนคละ", math: ans(wf(i(2,true),i(11),i(14))) }
         ]},
         { id: 15, q: cf(f(5,3) + op('+') + f(3,2), f(5,3) + op('-') + f(3,2)) + op('-') + '9', steps: [
-            cf( f(i(10),i(6)) + op('+') + f(i(9),i(6)) , f(i(10),i(6)) + op('-') + f(i(9),i(6)) ) + op('-') + '9',
-            cf( f(i(19),i(6)) , f(i(1),i(6)) ) + op('-') + '9',
-            br( f(i(19),i(6)) + op('×') + f(i(6),i(1)) ) + op('-') + '9',
-            i(19) + op('-') + '9',
-            ans(i(10))
+            { text: "ทำตัวส่วนให้เท่ากันทั้งด้านบนและด้านล่าง", math: cf( f(i(10),i(6)) + op('+') + f(i(9),i(6)) , f(i(10),i(6)) + op('-') + f(i(9),i(6)) ) + op('-') + '9' },
+            { text: "หาผลบวกและผลลบ", math: cf( f(i(19),i(6)) , f(i(1),i(6)) ) + op('-') + '9' },
+            { text: "เปลี่ยนรูปเศษส่วนซ้อนเป็นการคูณ", math: br( f(i(19),i(6)) + op('×') + f(i(6),i(1)) ) + op('-') + '9' },
+            { text: "หาผลคูณ", math: i(19) + op('-') + '9' },
+            { text: "ลบตัวเลขเพื่อหาคำตอบ", math: ans(i(10)) }
         ]},
         { id: 16, q: cf(f(5,6) + op('÷') + f(2,3), f(1,2) + op('+') + f(1,3)) + op('-') + f(1,2), steps: [
-            cf( f(i(5),i(6)) + op('×') + f(i(3),i(2)) , f(i(3),i(6)) + op('+') + f(i(2),i(6)) ) + op('-') + f(i(1),i(2)),
-            cf( f(i(5),i(4)) , f(i(5),i(6)) ) + op('-') + f(i(1),i(2)),
-            br( f(i(5),i(4)) + op('×') + f(i(6),i(5)) ) + op('-') + f(i(1),i(2)),
-            f(i(6),i(4)) + op('-') + f(i(1),i(2)),
-            f(i(3),i(2)) + op('-') + f(i(1),i(2)),
-            f(i(2),i(2)),
-            ans(i(1))
+            { text: "เปลี่ยนเครื่องหมายหารเป็นคูณ และทำตัวส่วนให้เท่ากัน", math: cf( f(i(5),i(6)) + op('×') + f(i(3),i(2)) , f(i(3),i(6)) + op('+') + f(i(2),i(6)) ) + op('-') + f(i(1),i(2)) },
+            { text: "หาผลลัพธ์ของตัวเศษและตัวส่วน", math: cf( f(i(5),i(4)) , f(i(5),i(6)) ) + op('-') + f(i(1),i(2)) },
+            { text: "เปลี่ยนรูปเศษส่วนซ้อนเป็นการคูณ", math: br( f(i(5),i(4)) + op('×') + f(i(6),i(5)) ) + op('-') + f(i(1),i(2)) },
+            { text: "ตัดทอนและหาผลคูณ", math: f(i(6),i(4)) + op('-') + f(i(1),i(2)) },
+            { text: "ทอนให้ต่ำและเตรียมลบ", math: f(i(3),i(2)) + op('-') + f(i(1),i(2)) },
+            { text: "ลบเศษส่วน", math: f(i(2),i(2)) },
+            { text: "ทอนเป็นจำนวนเต็ม", math: ans(i(1)) }
         ]},
         { id: 17, q: cf(f(36,13), '1' + op('+') + cf(wf(2,5,6), '34')), steps: [
-            cf(f(i(36),i(13)), '1' + op('+') + br( f(i(17),i(6)) + op('×') + f(i(1),i(34)) )),
-            cf(f(i(36),i(13)), '1' + op('+') + f(i(1),i(12))),
-            f(i(36),i(13)) + op('÷') + f(i(13),i(12)),
-            f(i(36),i(13)) + op('×') + f(i(12),i(13)),
-            ans(wf(i(2,true), i(94), i(169)))
+            { text: "แปลงจำนวนคละและคูณในส่วนด้านล่าง", math: cf(f(i(36),i(13)), '1' + op('+') + br( f(i(17),i(6)) + op('×') + f(i(1),i(34)) )) },
+            { text: "หาผลคูณในวงเล็บ", math: cf(f(i(36),i(13)), '1' + op('+') + f(i(1),i(12))) },
+            { text: "บวกจำนวนเต็มและเขียนในรูปการหาร", math: f(i(36),i(13)) + op('÷') + f(i(13),i(12)) },
+            { text: "เปลี่ยนหารเป็นคูณและกลับเศษเป็นส่วน", math: f(i(36),i(13)) + op('×') + f(i(12),i(13)) },
+            { text: "คูณและแปลงเป็นจำนวนคละ", math: ans(wf(i(2,true), i(94), i(169))) }
         ]},
         { id: 18, q: cf(wf(3,4,5) + op('×') + f(3,38), wf(1,2,15) + op('÷') + wf(1,8,9)) + op('-') + '9', steps: [
-            cf( f(i(19),i(5)) + op('×') + f(i(3),i(38)) , f(i(17),i(15)) + op('÷') + f(i(17),i(9)) ) + op('-') + '9',
-            cf( f(i(3),i(10)) , f(i(17),i(15)) + op('×') + f(i(9),i(17)) ) + op('-') + '9',
-            cf( f(i(3),i(10)) , f(i(3),i(5)) ) + op('-') + '9',
-            br( f(i(3),i(10)) + op('×') + f(i(5),i(3)) ) + op('-') + '9',
-            f(i(1),i(2)) + op('-') + '9',
-            f(i(1),i(2)) + op('-') + f(i(18),i(2)),
-            ans(op('-') + wf(i(8,true), i(1), i(2)))
+            { text: "แปลงจำนวนคละเป็นเศษเกิน", math: cf( f(i(19),i(5)) + op('×') + f(i(3),i(38)) , f(i(17),i(15)) + op('÷') + f(i(17),i(9)) ) + op('-') + '9' },
+            { text: "คำนวณและตัดทอนผลลัพธ์บน/ล่าง", math: cf( f(i(3),i(10)) , f(i(17),i(15)) + op('×') + f(i(9),i(17)) ) + op('-') + '9' },
+            { text: "หาผลคูณในตัวส่วน", math: cf( f(i(3),i(10)) , f(i(3),i(5)) ) + op('-') + '9' },
+            { text: "เปลี่ยนรูปเศษส่วนซ้อนเป็นการคูณ", math: br( f(i(3),i(10)) + op('×') + f(i(5),i(3)) ) + op('-') + '9' },
+            { text: "หาผลคูณ", math: f(i(1),i(2)) + op('-') + '9' },
+            { text: "ทำส่วนให้เท่ากันเพื่อลบ", math: f(i(1),i(2)) + op('-') + f(i(18),i(2)) },
+            { text: "หาคำตอบสุดท้าย (ผลลัพธ์ติดลบ)", math: ans(op('-') + wf(i(8,true), i(1), i(2))) }
         ]}
     ];
 
@@ -267,7 +266,6 @@
         
         dataArray.forEach((prob, index) => {
             let displayNum = index + 1; 
-            // เช็คว่าข้อนี้ทำเสร็จไปแล้วหรือยัง
             let isProbDone = scores[prob.id] ? 'done' : '';
 
             html += `
@@ -282,9 +280,9 @@
                 let isLast = idx === prob.steps.length - 1;
                 html += `
                 <details class="step-item" data-prob="${prob.id}" data-step="${idx}" open>
-                    <summary>ขั้นที่ ${idx + 1} ${isLast ? '(คำตอบสุดท้าย)' : ''}</summary>
+                    <summary>ขั้นที่ ${idx + 1}: <span class="step-desc">${step.text}</span> ${isLast ? ' <b>(คำตอบสุดท้าย)</b>' : ''}</summary>
                     <div class="step-content">
-                        ${eq()} <div class="math-expr">${step}</div>
+                        ${eq()} <div class="math-expr">${step.math}</div>
                     </div>
                 </details>`;
             });
@@ -346,7 +344,6 @@
         const inputs = document.querySelectorAll('.blank-box');
         
         inputs.forEach(input => {
-            // ถ้าเคยตอบถูกไปแล้ว (ตอนสลับหน้ากลับมา) ให้ล็อกช่องไว้เหมือนเดิม
             if(input.value.trim() === input.getAttribute('data-answer')) {
                 input.classList.add('correct');
                 input.readOnly = true;
@@ -376,7 +373,7 @@
                     currentStep.classList.add('completed');
                 }
 
-                // เช็คเฉพาะ "คำตอบสุดท้าย" (ขั้นสุดท้ายสุดของข้อนั้นๆ)
+                // Check final step
                 const stepContainer = currentStep.closest('.step-container');
                 const allStepsInProb = Array.from(stepContainer.querySelectorAll('.step-item'));
                 const lastStep = allStepsInProb[allStepsInProb.length - 1];
@@ -387,10 +384,8 @@
                     if (!inp.classList.contains('correct')) isLastStepCompleted = false;
                 });
 
-                // ถ้านักเรียนทำคำตอบสุดท้ายถูก ถือว่าได้คะแนนเลย
                 if (isLastStepCompleted) {
                     scores[probId] = true;
-                    // เปลี่ยนสีกรอบเป็นสีเขียวเพื่อให้รู้ว่าเสร็จแล้ว
                     const probCard = document.getElementById('prob-' + probId);
                     if (probCard) probCard.classList.add('done');
                 }
@@ -398,7 +393,6 @@
         });
     }
 
-    // Initialize first page
     renderProblems(page1Data);
 
 </script>
