@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ (Mobile)</title>
+    <title>แบบฝึกหัดคณิตศาสตร์: การคำนวณเศษส่วนและจำนวนคละ (อิสระ)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -25,19 +25,18 @@
         .instruction-box { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; line-height: 1.5; }
         
         /* Problems */
-        .problem-card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; overflow: hidden; }
+        .problem-card { background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; overflow: hidden; transition: border-color 0.3s ease; }
+        .problem-card.done { border-color: #38a169; background-color: #f0fff4; }
         .problem-header { font-size: 16px; font-weight: bold; color: #2c5282; margin-bottom: 15px; display: flex; align-items: flex-start; flex-direction: column; gap: 8px; }
         @media (min-width: 600px) { .problem-header { flex-direction: row; align-items: center; } }
-        .badge { background: #3182ce; color: white; padding: 4px 10px; border-radius: 4px; font-size: 13px; }
+        .badge { background: #3182ce; color: white; padding: 4px 10px; border-radius: 4px; font-size: 13px; transition: background-color 0.3s ease; }
+        .problem-card.done .badge { background: #38a169; }
         
         /* Steps */
         .step-container { margin-top: 10px; }
         details { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; padding: 10px 12px; transition: all 0.2s ease; }
         details[open] { border-color: #4299e1; box-shadow: 0 2px 4px rgba(66, 153, 225, 0.1); }
         summary { font-weight: 600; color: #4a5568; cursor: pointer; outline: none; user-select: none; font-size: 15px; }
-        details.locked { background-color: #f7fafc; opacity: 0.8; }
-        details.locked summary { color: #a0aec0; cursor: not-allowed; }
-        details.locked summary::after { content: " 🔒"; font-size: 12px; color: #e53e3e; }
         details.completed { border-color: #38a169; }
         details.completed summary::after { content: " ✅"; font-size: 12px; color: #38a169; }
         
@@ -58,14 +57,15 @@
         .operator { font-size: 18px; margin: 0 6px; font-weight: bold; color: #e53e3e; }
         .bracket { font-size: 26px; font-weight: 300; color: #4a5568; margin: 0 1px; }
         .equal-sign { font-size: 18px; margin: 0 8px; font-weight: bold; color: #2b6cb0; flex-shrink: 0; }
-        .final-answer { background-color: #fff; border: 2px dashed #cbd5e0; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; }
+        .final-answer { background-color: #fff; border: 2px dashed #cbd5e0; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; transition: all 0.3s ease; }
+        .problem-card.done .final-answer { background-color: #c6f6d5; border-color: #38a169; }
         
         /* Complex Fractions */
         .cf-container { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 6px; vertical-align: middle; }
         .cf-num { border-bottom: 3px solid #2b6cb0; padding: 0 6px 6px 6px; display: flex; align-items: center; justify-content: center; }
         .cf-den { padding: 6px 6px 0 6px; display: flex; align-items: center; justify-content: center; }
 
-        /* Inputs (Optimized for fat fingers & No Auto-Zoom) */
+        /* Inputs */
         .blank-box { width: 38px; height: 32px; border: 1.5px solid #cbd5e0; border-radius: 6px; background-color: #fff; text-align: center; font-size: 16px !important; font-weight: 600; color: #2b6cb0; outline: none; padding: 0; margin: 2px; transition: all 0.2s ease; }
         .blank-box:focus { border-color: #3182ce; background-color: #ebf8ff; box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); }
         .whole-box { width: 42px; height: 42px; font-size: 18px !important; margin-right: 4px; }
@@ -86,7 +86,7 @@
 <div class="container">
     <header>
         <h1>📝 แบบฝึกหัด: เศษส่วนและจำนวนคละ</h1>
-        <div class="subtitle">ระบบตรวจคำตอบ (ปัดซ้าย-ขวา เพื่อดูสมการเต็ม)</div>
+        <div class="subtitle">ระบบตรวจคำตอบอิสระ (ตอบแค่คำตอบสุดท้ายก็ถือว่าผ่าน)</div>
     </header>
 
     <div class="nav-buttons" id="navContainer">
@@ -99,7 +99,7 @@
 </div>
 
 <script>
-    // --- Helper Functions (เพิ่ม inputmode="numeric" และ pattern="[0-9]*" เพื่อเรียกแป้นพิมพ์ตัวเลข) ---
+    // --- Helper Functions ---
     function i(ans, isWhole=false) { return `<input type="text" inputmode="numeric" pattern="[0-9]*" class="blank-box ${isWhole?'whole-box':''}" data-answer="${ans}" autocomplete="off">`; }
     function f(n, d) { return `<div class="fraction-container"><div class="fraction-block"><span class="num">${n}</span><span class="den">${d}</span></div></div>`; }
     function wf(w, n, d) { return `<div class="fraction-container"><span class="whole-num">${w}</span><div class="fraction-block"><span class="num">${n}</span><span class="den">${d}</span></div></div>`; }
@@ -263,13 +263,15 @@
 
     // --- Render Engine ---
     function renderProblems(dataArray) {
-        let html = `<div class="instruction-box">💡 <strong>คำแนะนำ:</strong> จิ้มที่ช่องสี่เหลี่ยมแล้วเติมตัวเลขด้วยแป้นพิมพ์ <strong>ตอบถูกช่องจะเปลี่ยนเป็นสีเขียว ✅</strong> (สามารถเลื่อนปัดซ้าย-ขวา เพื่อดูสมการที่ยาวๆ ได้ครับ)</div>`;
+        let html = `<div class="instruction-box">💡 <strong>คำแนะนำ:</strong> สามารถเลือกทำขั้นตอนไหนก่อนก็ได้ <strong>หากเติม "คำตอบสุดท้าย" ถูกต้อง จะถือว่าทำข้อนั้นเสร็จสมบูรณ์ทันที! ✅</strong></div>`;
         
         dataArray.forEach((prob, index) => {
             let displayNum = index + 1; 
+            // เช็คว่าข้อนี้ทำเสร็จไปแล้วหรือยัง
+            let isProbDone = scores[prob.id] ? 'done' : '';
 
             html += `
-            <div class="problem-card" id="prob-${prob.id}">
+            <div class="problem-card ${isProbDone}" id="prob-${prob.id}">
                 <div class="problem-header">
                     <span class="badge">ข้อที่ ${displayNum}</span> 
                     <div class="math-expr">${prob.q}</div>
@@ -279,7 +281,7 @@
             prob.steps.forEach((step, idx) => {
                 let isLast = idx === prob.steps.length - 1;
                 html += `
-                <details class="step-item" data-prob="${prob.id}" data-step="${idx}">
+                <details class="step-item" data-prob="${prob.id}" data-step="${idx}" open>
                     <summary>ขั้นที่ ${idx + 1} ${isLast ? '(คำตอบสุดท้าย)' : ''}</summary>
                     <div class="step-content">
                         ${eq()} <div class="math-expr">${step}</div>
@@ -332,7 +334,7 @@
     function switchPage(page) {
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // เลื่อนกลับไปบนสุดเมื่อสลับหน้า
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
         
         if (page === 'page1') renderProblems(page1Data);
         else if (page === 'page2') renderProblems(page2Data);
@@ -341,44 +343,21 @@
 
     // --- Interactive Logic ---
     function attachInteractions() {
-        document.querySelectorAll('.step-container').forEach(container => {
-            const steps = container.querySelectorAll('.step-item');
-            steps.forEach((step, index) => {
-                const inputs = step.querySelectorAll('.blank-box');
-                let isStepDone = inputs.length > 0;
-                inputs.forEach(inp => {
-                    if (inp.value.trim() !== inp.getAttribute('data-answer')) isStepDone = false;
-                });
-
-                if (index === 0 || step.classList.contains('completed')) {
-                    step.open = true;
-                    step.classList.remove('locked');
-                } else {
-                    step.classList.add('locked');
-                    step.open = false;
-                }
-            });
-        });
-
-        document.querySelectorAll('.step-item').forEach(step => {
-            step.addEventListener('click', (e) => {
-                if (step.classList.contains('locked')) {
-                    e.preventDefault();
-                    alert('กรุณาทำขั้นตอนก่อนหน้าให้ถูกต้องครบถ้วนก่อนครับ 🔒');
-                }
-            });
-        });
-
         const inputs = document.querySelectorAll('.blank-box');
+        
         inputs.forEach(input => {
+            // ถ้าเคยตอบถูกไปแล้ว (ตอนสลับหน้ากลับมา) ให้ล็อกช่องไว้เหมือนเดิม
+            if(input.value.trim() === input.getAttribute('data-answer')) {
+                input.classList.add('correct');
+                input.readOnly = true;
+            }
+
             input.addEventListener('input', function() {
                 const correctAnswer = this.getAttribute('data-answer');
                 
                 if (this.value.trim() === correctAnswer) {
                     this.classList.add('correct');
                     this.readOnly = true; 
-                    
-                    // ป้องกัน Keyboard เด้งค้างหลังพิมพ์ถูก (เพิ่ม UX มือถือ)
                     this.blur(); 
                 } else {
                     this.classList.remove('correct');
@@ -395,20 +374,25 @@
 
                 if (isStepCompleted) {
                     currentStep.classList.add('completed');
-                    
-                    const stepContainer = currentStep.closest('.step-container');
-                    const allSteps = Array.from(stepContainer.querySelectorAll('.step-item'));
-                    const currentIndex = allSteps.indexOf(currentStep);
-                    
-                    if (currentIndex < allSteps.length - 1) {
-                        const nextStep = allSteps[currentIndex + 1];
-                        if (nextStep.classList.contains('locked')) {
-                            nextStep.classList.remove('locked');
-                            nextStep.open = true;
-                        }
-                    } else {
-                        scores[probId] = true;
-                    }
+                }
+
+                // เช็คเฉพาะ "คำตอบสุดท้าย" (ขั้นสุดท้ายสุดของข้อนั้นๆ)
+                const stepContainer = currentStep.closest('.step-container');
+                const allStepsInProb = Array.from(stepContainer.querySelectorAll('.step-item'));
+                const lastStep = allStepsInProb[allStepsInProb.length - 1];
+                const allInputsInLastStep = lastStep.querySelectorAll('.blank-box');
+
+                let isLastStepCompleted = true;
+                allInputsInLastStep.forEach(inp => {
+                    if (!inp.classList.contains('correct')) isLastStepCompleted = false;
+                });
+
+                // ถ้านักเรียนทำคำตอบสุดท้ายถูก ถือว่าได้คะแนนเลย
+                if (isLastStepCompleted) {
+                    scores[probId] = true;
+                    // เปลี่ยนสีกรอบเป็นสีเขียวเพื่อให้รู้ว่าเสร็จแล้ว
+                    const probCard = document.getElementById('prob-' + probId);
+                    if (probCard) probCard.classList.add('done');
                 }
             });
         });
